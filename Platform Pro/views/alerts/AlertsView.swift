@@ -20,9 +20,7 @@ struct AlertsView: View {
       PageHeader(title: "Alerts ⚠️", buttonFunction: fetcher.getCurrentAlerts)
       
       if (fetcher.lastAlertsResponse.hasError ?? false && fetcher.lastAlertsResponse.alerts.isEmpty) { // failed to fetch, haven't gotten results
-        Spacer()
-        Text("\(Image(systemName: "wifi.exclamationmark")) failed to fetch alerts data; check connection and try again")
-        Spacer()
+        CenteredError(message: "Failed to fetch alerts data; check connection and try again", withSystemIcon: "wifi.exclamationmark")
       } else {
         if (fetcher.lastAlertsResponse.hasError ?? false) { // failed to fetch
           Text("\(Image(systemName: "wifi.exclamationmark")) failed to connect; data may be old").padding(.top, 10)

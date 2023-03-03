@@ -69,21 +69,14 @@ struct NearbyArrivalsView: View {
       PageHeader(title: "Trains 🚂", buttonFunction: triggerRefresh)
       
       if (locationManager.manager.authorizationStatus == .notDetermined || locationManager.manager.authorizationStatus == .denied) {
-        VStack(spacing: 40) {
-          Image(systemName: "location.slash.fill")
-            .resizable()
-            .frame(width: 50, height: 50)
-          Text("We don't have permission to use your location; allow location usage in Settings to enable this page")
-        }
-        .padding([.top, .horizontal], 100)
-        Spacer()
+        CenteredError(message: "We don't have permission to use your location; allow location usage in Settings to enable this page", withSystemIcon: "location.slash.fill")
       } else {
-        if (fetcher.lastArrivalsResponse.hasError ?? false && fetcher.lastArrivalsResponse.data.isEmpty) { // failed to fetch, haven't gotten results
-          Spacer()
-          Text("\(Image(systemName: "wifi.exclamationmark")) failed to fetch train data; check connection and try again")
-          Spacer()
+        if (fetcher.lastArrivalsResponse.hasError ?? false && fetcher.lastArrivalsResponse.data.isEmpty) {
+          // failed to fetch, haven't gotten results
+          CenteredError(message: "Failed to fetch train data; check connection and try again", withSystemIcon: "wifi.exclamationmark")
         } else {
-          if (fetcher.lastArrivalsResponse.hasError ?? false) { // failed to fetch
+          if (fetcher.lastArrivalsResponse.hasError ?? false) {
+            // failed to fetch, but keep showing old results and let user decide if they're still relevant
             Text("\(Image(systemName: "wifi.exclamationmark")) failed to connect; data may be old").padding(.top, 10)
           }
           List{

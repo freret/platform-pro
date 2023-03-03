@@ -13,9 +13,11 @@ class Fetcher: ObservableObject {
   @Published var lastArrivalsResponse: MTAPIResponse = MTAPIResponse(data: [], updated: Date(), hasError: false)
   @Published var lastAlertsResponse: AlertResponse = AlertResponse(updated: 0, alerts: [])
   
+  private let API_PREFIX: String = "https://platform-pro-api.herokuapp.com"
+  
   func getCurrentAlerts() {
     print("requesting alerts")
-    guard let url = URL(string: "https://just-trains.herokuapp.com/alerts") else { fatalError("Missing URL") }
+    guard let url = URL(string: "\(API_PREFIX)/alerts") else { fatalError("Missing URL") }
     
     let urlRequest = URLRequest(url: url)
     
@@ -43,6 +45,12 @@ class Fetcher: ObservableObject {
             print("Error decoding: ", error)
           }
         }
+      } else {
+        // 404, for example
+        DispatchQueue.main.async {
+          self.lastAlertsResponse.hasError = true
+        }
+        return
       }
     }
     
@@ -54,7 +62,7 @@ class Fetcher: ObservableObject {
     let lat = relativeTo.coordinate.latitude
     let lon = relativeTo.coordinate.longitude
     
-    guard let url = URL(string: "https://just-trains.herokuapp.com/by-location?lat=\(lat)&lon=\(lon)") else { fatalError("Missing URL") }
+    guard let url = URL(string: "\(API_PREFIX)/by-location?lat=\(lat)&lon=\(lon)") else { fatalError("Missing URL") }
     
     let urlRequest = URLRequest(url: url)
     
@@ -80,14 +88,16 @@ class Fetcher: ObservableObject {
             print("Error decoding: ", error)
           }
         }
+      } else {
+        // 404, for example
+        DispatchQueue.main.async {
+          self.lastArrivalsResponse.hasError = true
+        }
+        return
       }
     }
     
     dataTask.resume()
   }
   
-  func TEST_getNearestStationData() {
-    let c = CLLocation(latitude: 40.68118312462264, longitude: -73.95529723026948)
-    getNearestStationData(relativeTo: c)
-  }
 }
