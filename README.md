@@ -2,7 +2,7 @@
 An extremely light NYC subway timetable built for iPhone. Real-time departures and service alerts for a user's current location.
 
 ## Usage
-Clone this repo and open `
+Clone this repo and open `Platform Pro.xcodeproj` using Xcode 12+
 
 ## Resources
 - [SwiftUI](https://developer.apple.com/documentation/swiftui/)
